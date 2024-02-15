@@ -3,6 +3,7 @@
 newUrl='https://the-ip-or-url-of-your-new-mirror-address.com/' #New mirror address
 badURL='127.0.0.1'  #Old mirror address you want to replace
 amount='100'  #Amount in mojos of new mirror coin
+fee='0'
 
 subscriptions_array=( $(nice -n 19 chia data get_subscriptions | jq -r .store_ids[]) )
 
@@ -24,7 +25,7 @@ do
             sleep 5
         done
         echo "Deleting mirror for ${coin_id}"
-        nice -n 19 chia data delete_mirror -c ${coin_id}
+        nice -n 19 chia data delete_mirror -m ${fee} -c ${coin_id}
         confirmedCount=0
         totalCount=1
         while [ $confirmedCount != $totalCount ]
@@ -35,7 +36,7 @@ do
             sleep 5
         done
         echo "Adding mirror for store-id ${sub}"
-        nice -n 19 chia data add_mirror --id ${sub} --amount ${amount} --url ${newUrl}
+        nice -n 19 chia data add_mirror  -m ${fee} --id ${sub} --amount ${amount} --url ${newUrl}
         confirmedCount=0
         totalCount=1
         while [ $confirmedCount != $totalCount ]
