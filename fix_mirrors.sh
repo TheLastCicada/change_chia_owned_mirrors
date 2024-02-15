@@ -2,6 +2,7 @@
 
 newUrl='https://the-ip-or-url-of-your-new-mirror-address.com/' #New mirror address
 badURL='127.0.0.1'  #Old mirror address you want to replace
+amount='100'  #Amount in mojos of new mirror coin
 
 subscriptions_array=( $(nice -n 19 chia data get_subscriptions | jq -r .store_ids[]) )
 
@@ -32,7 +33,7 @@ do
             totalCount=$(nice -n 19 chia wallet get_transactions --no-paginate | grep "Status:" | wc -l)
             sleep 8
         done
-        nice -n 19 chia data add_mirror --id ${sub} --amount 100 --url ${newUrl}
+        nice -n 19 chia data add_mirror --id ${sub} --amount ${amount} --url ${newUrl}
         confirmedCount=0
         totalCount=1
         while [ $confirmedCount != $totalCount ]
