@@ -36,7 +36,7 @@ do
             sleep 5
         done
         echo "Adding mirror for store-id ${sub}"
-        nice -n 19 chia data add_mirror  -m ${fee} --id ${sub} --amount ${amount} --url ${newUrl}
+        nice -n 19 chia data add_mirror -m ${fee} --id ${sub} --amount ${amount} --url ${newUrl}
         confirmedCount=0
         totalCount=1
         while [ $confirmedCount != $totalCount ]
