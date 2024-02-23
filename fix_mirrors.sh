@@ -90,7 +90,6 @@ subscriptions_array=( $(nice -n 19 chia data get_subscriptions | jq -r .store_id
 
 for sub in "${subscriptions_array[@]}"
 do
-    echo "Subscription ID: ${sub}"
     coin_id=''
     coin_id=$(nice -n 19 chia data get_mirrors --id ${sub} | jq -r --arg badURL "${badURL}" '.mirrors[] | select(.ours == true and any(.urls[]; contains($badURL))) | .coin_id')
     if [ ! -z "$coin_id" ]
@@ -107,7 +106,7 @@ do
                 sleep 5
             done
         fi
-        echo "Deleting mirror with coin_id ${coin_id}"
+        echo "Deleting mirror for subscription ${sub} with coin_id ${coin_id}"
         nice -n 19 chia data delete_mirror -m ${fee} -c ${coin_id}
         if $waitForTransactions
         then
@@ -121,7 +120,7 @@ do
                 sleep 5
             done
         fi
-        echo "Adding mirror for store_id ${sub}"
+        echo "Adding mirror for subscription ${sub}"
         nice -n 19 chia data add_mirror -m ${fee} --id ${sub} --amount ${amount} --url ${newURL}
         if $waitForTransactions
         then
@@ -136,7 +135,7 @@ do
             done
         fi
     else
-        echo "No bad mirrors here"
+        echo "No bad mirrors here on subscription ${sub}"
     fi
 done
 
