@@ -78,8 +78,8 @@ fi
 # Rest of your script using the variables
 echo "newURL: $newURL"
 echo "badURL: $badURL"
-echo "fee: $fee"
-echo "amount: $amount"
+echo "fee: $fee XCH"
+echo "amount: $amount mojo"
 echo "waitForTransactions: $waitForTransactions"
 
 #
