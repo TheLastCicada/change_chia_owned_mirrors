@@ -14,14 +14,16 @@ waitForTransactions=true
 display_help() {
     echo "Usage: $0 [OPTIONS]"
     echo "Options:"
-    echo "  -n, --newURL=URL          New mirror URL (required)"
-    echo "  -b, --badURL=URL          Old mirror URL to replace (required)"
-    echo "  -f, --fee=VALUE           Fee in mojos (default: 0 mojos)"
-    echo "  -a, --amount=VALUE        Mirror coin amount in mojos (default: 100 mojos)"
-    echo "  -w, --waitForTransactions=VALUE"
+    echo "  -n, --newURL URL          New mirror URL (required)"
+    echo "  -b, --badURL URL          Old mirror URL to replace (required)"
+    echo "  -f, --fee VALUE           Fee in XCH (default: 0 XCH)"
+    echo "  -a, --amount VALUE        Mirror coin amount in mojos (default: 100 mojos)"
+    echo "  -w, --waitForTransactions BOOLEAN"
     echo "                            Boolean - Wait for transactions to finish (default: true)"
     echo "  -h, --help                Display this help message"
     echo ""
+    echo ""
+    echo "Example: ./fix_mirrors.sh -b 127.0.0.1 -n https://my-dl-domain.com -a 300 -f 0.00000001 -w false"
     echo ""
     echo "Note that if waitForTransactions is false, you must have enough individual coins in your"
     echo "Chia wallet to cover the mirror updates. You can check how many coins are in your Chia"
@@ -79,8 +81,6 @@ echo "badURL: $badURL"
 echo "fee: $fee"
 echo "amount: $amount"
 echo "waitForTransactions: $waitForTransactions"
-
-exit
 
 #
 # /Variables
