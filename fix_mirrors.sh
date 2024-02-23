@@ -16,8 +16,8 @@ display_help() {
     echo "Options:"
     echo "  -n, --newURL=URL          New mirror URL (required)"
     echo "  -b, --badURL=URL          Old mirror URL to replace (required)"
-    echo "  -f, --fee=VALUE           Fee (default: 0)"
-    echo "  -a, --amount=VALUE        Mirror coin amount (default: 100)"
+    echo "  -f, --fee=VALUE           Fee in mojos (default: 0 mojos)"
+    echo "  -a, --amount=VALUE        Mirror coin amount in mojos (default: 100 mojos)"
     echo "  -w, --waitForTransactions=VALUE"
     echo "                            Boolean - Wait for transactions to finish (default: true)"
     echo "  -h, --help                Display this help message"
@@ -32,27 +32,36 @@ display_help() {
 # Parse command line arguments
 while [ $# -gt 0 ]; do
     case "$1" in
-        -n | --newURL=*)
-            newURL="${1#*=}"
+        -n | --newURL)
+            shift
+            newURL="$1"
             ;;
-        -b | --badURL=*)
-            badURL="${1#*=}"
+        -b | --badURL)
+            shift
+            badURL="$1"
             ;;
-        -m | --fee=*)
-            fee="${1#*=}"
+        -m | --fee)
+            shift
+            fee="$1"
             ;;
-        -a | --amount=*)
-            amount="${1#*=}"
+        -a | --amount)
+            shift
+            amount="$1"
             ;;
-        -w | --waitForTransactions=*)
-            waitForTransactions="${1#*=}"
+        -w | --waitForTransactions)
+            shift
+            waitForTransactions="$1"
             ;;
         -h | --help)
             display_help
             ;;
         *)
-            echo "Invalid argument: $1"
-            exit 1
+            if [[ "$1" == --badURL=* ]]; then
+                badURL="${1#*=}"
+            else
+                echo "Invalid argument: $1"
+                exit 1
+            fi
             ;;
     esac
     shift
