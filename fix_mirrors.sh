@@ -42,7 +42,7 @@ while [ $# -gt 0 ]; do
             shift
             badURL="$1"
             ;;
-        -m | --fee)
+        -f | -m | --fee)
             shift
             fee="$1"
             ;;
