@@ -1,4 +1,4 @@
-# change_chia_owned_mirrors
+# Change Chia Owned Mirrors
 
 Have numerous Chia Datalayer subscriptions that you are mirroring and want to change the address of your mirrors in bulk?  Then this Bash script is for you!
 
@@ -6,14 +6,21 @@ Have numerous Chia Datalayer subscriptions that you are mirroring and want to ch
 
 `delete_mirrors.sh` will loop through all of your owned subscriptions and delete them one by one.
 
-# Variables
+# Usage
 
-At the top of the file are 5 variables that need to be set:
+    Options:
+      -n, --newURL URL          New mirror URL (required)
+      -b, --badURL URL          Old mirror URL to replace (required)"
+      -f, --fee VALUE           Fee in XCH (default: 0 XCH)
+      -a, --amount VALUE        Mirror coin amount in mojo (default: 100 mojos)
+      -w, --waitForTransactions BOOLEAN"
+                                Boolean - Wait for transactions to finish (default: true)"
+      -h, --help                Display help
 
-* **newURL**: This is what the new mirror should be set to.  Can have a path, could be an IP.  Should have http:// or https://.
-* **badURL**: URL to replace. Mirror URLs will only be replaced if they contain this bad URL.
-* **fee**: Fee to use for the new mirror transaction.
-* **amount**: Coin amount for the mirror coin. 
+**Example:**  
+`./fix_mirrors.sh -b 127.0.0.1 -n https://my-dl-domain.com -a 300 -f 0.00000001 -w false"`
+    
+Note that if waitForTransactions is false, you must have enough individual coins in your Chia wallet to cover the mirror updates. You can check how many coins are in your Chia wallet with 'chia wallet coins list' and create more coins with 'chia wallet coins split'.
 
 # Coin Splitting
 
