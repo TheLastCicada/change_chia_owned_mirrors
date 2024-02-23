@@ -3,18 +3,75 @@
 #
 # Variables
 #
+#!/bin/bash
 
-newUrl='https://the-ip-or-url-of-your-new-mirror-address.com/' #New mirror address
-badURL='127.0.0.1'  #Old mirror address you want to replace
+# Define default values
 fee='0'
 amount='100'
+waitForTransactions=true
 
-# If your wallet has enough coins to do all the mirror transactions simultaneously,
-# set this variable to false.  Use `chia coins split` to create enough coins to
-# cover the mirror coin amount and fees for each subscription.  If you don't want
-# to ensure you have enough coins, change this to "true" and the script will wait
-# for the previous transaction to finish before starting a new one.
-wait_for_transactions=true
+# Function to display help
+display_help() {
+    echo "Usage: $0 [OPTIONS]"
+    echo "Options:"
+    echo "  -n, --newURL=URL          New mirror URL (required)"
+    echo "  -b, --badURL=URL          Old mirror URL to replace (required)"
+    echo "  -f, --fee=VALUE           Fee (default: 0)"
+    echo "  -a, --amount=VALUE        Mirror coin amount (default: 100)"
+    echo "  -w, --waitForTransactions=VALUE"
+    echo "                            Boolean - Wait for transactions to finish (default: true)"
+    echo "  -h, --help                Display this help message"
+    echo ""
+    echo ""
+    echo "Note that if waitForTransactions is false, you must have enough individual coins in your"
+    echo "Chia wallet to cover the mirror updates. You can check how many coins are in your Chia"
+    echo "wallet with 'chia wallet coins list' and create more coins with 'chia wallet coins split'."
+    exit 0
+}
+
+# Parse command line arguments
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -n | --newURL=*)
+            newURL="${1#*=}"
+            ;;
+        -b | --badURL=*)
+            badURL="${1#*=}"
+            ;;
+        -m | --fee=*)
+            fee="${1#*=}"
+            ;;
+        -a | --amount=*)
+            amount="${1#*=}"
+            ;;
+        -w | --waitForTransactions=*)
+            waitForTransactions="${1#*=}"
+            ;;
+        -h | --help)
+            display_help
+            ;;
+        *)
+            echo "Invalid argument: $1"
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+# Check for required arguments
+if [ -z "$newURL" ] || [ -z "$badURL" ]; then
+    echo "Error: --newURL (-n) and --badURL (-b) are required."
+    exit 1
+fi
+
+# Rest of your script using the variables
+echo "newURL: $newURL"
+echo "badURL: $badURL"
+echo "fee: $fee"
+echo "amount: $amount"
+echo "waitForTransactions: $waitForTransactions"
+
+exit
 
 #
 # /Variables
@@ -29,7 +86,7 @@ do
     coin_id=$(nice -n 19 chia data get_mirrors --id ${sub} | jq -r --arg badURL "${badURL}" '.mirrors[] | select(.ours == true and any(.urls[]; contains($badURL))) | .coin_id')
     if [ ! -z "$coin_id" ]
     then
-        if $wait_for_transactions
+        if $waitForTransactions
         then
             confirmedCount=$(nice -n 19 chia wallet get_transactions --no-paginate | grep "Status: Confirmed" | wc -l)
             totalCount=$(nice -n 19 chia wallet get_transactions --no-paginate | grep "Status:" | wc -l)
@@ -43,7 +100,7 @@ do
         fi
         echo "Deleting mirror with coin_id ${coin_id}"
         nice -n 19 chia data delete_mirror -m ${fee} -c ${coin_id}
-        if $wait_for_transactions
+        if $waitForTransactions
         then
             confirmedCount=0
             totalCount=1
@@ -56,8 +113,8 @@ do
             done
         fi
         echo "Adding mirror for store_id ${sub}"
-        nice -n 19 chia data add_mirror -m ${fee} --id ${sub} --amount ${amount} --url ${newUrl}
-        if $wait_for_transactions
+        nice -n 19 chia data add_mirror -m ${fee} --id ${sub} --amount ${amount} --url ${newURL}
+        if $waitForTransactions
         then
             confirmedCount=0
             totalCount=1
