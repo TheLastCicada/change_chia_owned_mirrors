@@ -15,7 +15,7 @@ do
             coin_ids=($coin_id) # Handle a situation with multiple owned mirrors....
             for coin in "${coin_ids[@]}"
             do
-                echo "Deleting and mirror for coin_id: ${coin}"
+                echo "Deleting mirror for coin_id: ${coin}"
                 nice -n 19 chia data delete_mirror -c ${coin} -m ${fee}
             done
     else
